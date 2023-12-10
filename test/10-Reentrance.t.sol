@@ -12,7 +12,7 @@ import "../src/levels/10-Reentrance/AttackReentrance.sol";
 contract ReentranceTest is DSTest {
     Vm vm = Vm(address(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D));
     Ethernaut ethernaut;
-    address hacker = vm.addr(1); // generate random-looReentrance address with given private key
+    address hacker = vm.addr(1);
 
     function setUp() public {
         ethernaut = new Ethernaut();

