@@ -6,9 +6,10 @@ import "ds-test/test.sol";
 import "forge-std/Vm.sol";
 
 import "src/core/Ethernaut.sol";
-import "../src/levels/17-Recovery/RecoveryFactory.sol";
+import "../src/levels/18-MagicNumber/MagicNumberFactory.sol";
+import "../src/levels/18-MagicNumber/AttackMagicNumber.sol";
 
-contract RecoveryTest is DSTest {
+contract MagicNumberTest is DSTest {
     Vm vm = Vm(address(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D));
     Ethernaut ethernaut;
     address hacker = vm.addr(1);
@@ -20,28 +21,23 @@ contract RecoveryTest is DSTest {
         vm.deal(hacker, 1 ether);
     }
 
-    function testRecoveryHack() public {
+    function testMagicNumberHack() public {
         /////////////////
         // LEVEL SETUP //
         /////////////////
-        RecoveryFactory recoveryFactory = new RecoveryFactory();
-        ethernaut.registerLevel(recoveryFactory);
+        MagicNumFactory magicNumberFactory = new MagicNumFactory();
+        ethernaut.registerLevel(magicNumberFactory);
         vm.startPrank(hacker, hacker);
-        address levelAddress = ethernaut.createLevelInstance{value: 1 ether}(recoveryFactory);
+        address levelAddress = ethernaut.createLevelInstance{value: 1 ether}(magicNumberFactory);
+        MagicNum ethernautMagicNumber = MagicNum(levelAddress);
 
         //////////////////
         // LEVEL ATTACK //
         //////////////////
         // implement your solution here
-        // targetAddress = keccak256(RLP(sender, nonce))
-        address targetAddress = address(
-            uint160(
-                uint256(keccak256(abi.encodePacked(bytes1(0xd6), bytes1(0x94), address(levelAddress), bytes1(0x01))))
-            )
-        );
-
-        SimpleToken simpleToken = SimpleToken(payable(targetAddress));
-        simpleToken.destroy(payable(hacker));
+        AttackMagicNumber attacker = new AttackMagicNumber();
+        address solver = attacker.deploy();
+        ethernautMagicNumber.setSolver(solver);
 
         //////////////////////
         // LEVEL SUBMISSION //
